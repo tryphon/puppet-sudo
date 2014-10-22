@@ -9,6 +9,13 @@ class sudo {
     }
   }
 
+  if $debian::wheezy {
+    line { 'sudoers_secure_path':
+      file => '/etc/sudoers',
+      line => 'Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'
+    }
+  }
+
   user_line { root: line => "root	ALL=(ALL) ALL" }
   user_line { adm: line => "%adm	ALL=(ALL) ALL" }
 
