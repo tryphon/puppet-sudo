@@ -26,7 +26,7 @@ class sudo::ssh_agent_auth {
   package { libpam-ssh-agent: require => Apt::Sources_list[tryphon] }
 
   file { "/etc/pam.d/sudo":
-    source => "puppet:///sudo/sudo.pam",
+    source => "puppet:///modules/sudo/sudo.pam",
     require => Package[libpam-ssh-agent]
   }
 
