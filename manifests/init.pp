@@ -1,11 +1,18 @@
 class sudo {
-
   package { sudo: ensure => installed }
 
   define user_line($line) {
     line { "sudo-$name":
       file => "/etc/sudoers",
       line => $line
+    }
+  }
+
+  define conf($content) {
+    file { "/etc/sudoers.d/$name":
+      mode => 440,
+      content => "$content\n",
+      require => [Package['sudo'], User_Line['includedir']]
     }
   }
 
@@ -19,6 +26,7 @@ class sudo {
   user_line { root: line => "root	ALL=(ALL) ALL" }
   user_line { adm: line => "%adm	ALL=(ALL) ALL" }
 
+  user_line { 'includedir': line => "#includedir /etc/sudoers.d" }
 }
 
 class sudo::ssh_agent_auth {
