@@ -1,47 +1,15 @@
 class sudo {
   package { sudo: ensure => installed }
 
-  define user_line($line) {
-    line { "sudo-$name":
-      file => "/etc/sudoers",
-      line => $line
-    }
-  }
-
-  define conf($content) {
-    file { "/etc/sudoers.d/$name":
-      mode => 440,
-      content => "$content\n",
-      require => [Package['sudo'], User_Line['includedir']]
-    }
-  }
-
   if $debian::wheezy {
-    line { 'sudoers_secure_path':
-      file => '/etc/sudoers',
+    file_line { 'sudoers_secure_path':
+      path => '/etc/sudoers',
       line => 'Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'
     }
   }
 
-  user_line { root: line => "root	ALL=(ALL) ALL" }
-  user_line { adm: line => "%adm	ALL=(ALL) ALL" }
+  sudo::user_line { root: line => "root	ALL=(ALL) ALL" }
+  sudo::user_line { adm: line => "%adm	ALL=(ALL) ALL" }
 
-  user_line { 'includedir': line => "#includedir /etc/sudoers.d" }
-}
-
-class sudo::ssh_agent_auth {
-
-  package { libpam-ssh-agent: require => Apt::Sources_list[tryphon] }
-
-  file { "/etc/pam.d/sudo":
-    source => "puppet:///modules/sudo/sudo.pam",
-    require => Package[libpam-ssh-agent]
-  }
-
-  line { "sudoers_env_keep_ssh_auth_sock":
-    file => "/etc/sudoers",
-    line => "Defaults env_keep += SSH_AUTH_SOCK",
-    require => Package[libpam-ssh-agent]
-  }
-
+  sudo::user_line { 'includedir': line => "#includedir /etc/sudoers.d" }
 }
