@@ -9,7 +9,7 @@ class sudo {
   }
 
   sudo::user_line { root: line => "root	ALL=(ALL) ALL" }
-  sudo::user_line { adm: line => "%adm	ALL=(ALL) ALL" }
+  sudo::user_line { adm: line => "%adm	ALL=(ALL) NOPASSWD: ALL" }
 
   sudo::user_line { 'includedir': line => "#includedir /etc/sudoers.d" }
 }
